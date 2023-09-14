@@ -1,0 +1,73 @@
+# on:
+#   push:
+#     branches:
+#       - main
+# name: 🚀 Deploy website on push
+# env:
+#   VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+
+# jobs:
+#   web-deploy:
+#     name: 🎉 Deploy
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: 🚚 Get latest code
+#         uses: actions/checkout@v3
+
+#       - name: Use Node.js 18
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: "18"
+
+#       - name: 🔨 Build Project
+#         run: |
+#           npm run prod
+
+#       - name: 📂 Sync files
+#         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+#         with:
+#           server: ${{ secrets.GIT_CPANEL_REACT_SERVER }}
+#           username: ${{ secrets.GIT_CPANEL_REACT_USER }}
+#           password: ${{ secrets.GIT_CPANEL_REACT_PASSWORD }}
+#           protocol: ${{ secrets.GIT_CPANEL_REACT_PROTOCOL }}
+#           local-dir: ./dist/
+
+on:
+  push:
+    branches:
+      - main
+name: 🚀 Deploy website on push
+env:
+  BUILD_COMMAND: npm run build
+  DEPLOY_DIR: ./build
+  SERVER: ${{ secrets.YOUR_SERVER }}
+  USERNAME: ${{ secrets.YOUR_USERNAME }}
+  PASSWORD: ${{ secrets.YOUR_PASSWORD }}
+  PROTOCOL: ${{ secrets.YOUR_PROTOCOL }}
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          ${{ env.BUILD_COMMAND }}
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ env.SERVER }}
+          username: ${{ env.USERNAME }}
+          password: ${{ env.PASSWORD }}
+          protocol: ${{ env.PROTOCOL }}
+          local-dir: ${{ env.DEPLOY_DIR }}
